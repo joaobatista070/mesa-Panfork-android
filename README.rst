@@ -1,37 +1,51 @@
-# Mesa 3D Graphics Library
-[Mesa 3D Official Website](https://mesa3d.org)
+Mesa 3D Graphics Library
+=========================
+`Mesa 3D Official Website <https://mesa3d.org>`_
 
-## Panfork mod Bifrost "kbase shim" Support Branch
+Panfork Bifrost/"midgard" "kbase shim" Support Branch
+------------------------------------
 This branch provides partial support for Mali gXX GPUs and some tXX models.
 
-### Compiling
-
+Compiling
+---------
 To compile Mesa with support for the Panfrost driver, run the following commands:
 
-CFLAGS="-O3" meson -Dgallium-drivers=panfrost,swrast -Dvulkan-drivers= -Dbuildtype=release -Dllvm=disabled -Dprefix=/opt/panfrost
+.. code-block:: bash
 
-ninja -j8 install
-### System Configuration
+    CFLAGS="-O3" meson -Dgallium-drivers=panfrost,swrast \
+                        -Dvulkan-drivers= \
+                        -Dbuildtype=release \
+                        -Dllvm=disabled \
+                        -Dprefix=/opt/panfrost
 
+    ninja -j8 install
+
+System Configuration
+--------------------
 After compiling and installing, configure the system to load the correct libraries by adding the installation path to the dynamic linker configuration:
 
-echo /opt/panfrost/lib/aarch64-linux-gnu | sudo tee /etc/ld.so.conf.d/0-panfrost.conf
+.. code-block:: bash
 
-sudo ldconfig
+    echo /opt/panfrost/lib/aarch64-linux-gnu | sudo tee /etc/ld.so.conf.d/0-panfrost.conf
+    sudo ldconfig
 
-### Testing
+Testing
+-------
 To test the installation, install `glmark2-es2` and run the test for your GPU:
 
-sudo apt install glmark2-es2-x11 -y
+.. code-block:: bash
 
-GALLIUM_DRIVER=panfrost PAN_GPU_ID=$YOURGPUID glmark2-es2
+    sudo apt install glmark2-es2-x11 -y
 
-### GPU ID List
+    DISPLAY=:1 GALLIUM_DRIVER=panfrost PAN_GPU_ID=$YOURGPUID glmark2-es2
 
+GPU ID List
+-----------
 Remove the `0x` prefix from your GPU ID before using it in the command. For example, if your GPU ID is `0x7212`, you should use `7212`.
 
++---------+-----------+
 | GPU ID  | GPU Name  |
-|---------|-----------|
++---------+-----------+
 | 0x720   | T720      |
 | 0x750   | T760      |
 | 0x820   | T820      |
