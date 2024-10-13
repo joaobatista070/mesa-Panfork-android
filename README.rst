@@ -52,6 +52,6 @@ Remove the `0x` prefix from your GPU ID before using it in the command. For exam
 | 0x6000, 0x6221  | G71, G72       |
 | 0x7090, 0x7093  | G51, G31       |
 | 0x7211, 0x7212  | G76, G52       |
-| 0x7402, 0x9093  | G52 r1, G57    |
+| 0x7402, 0x9093  | G52-r1, G57    |
 | 0xa867, 0xa802  | G610, G710     |
 +-----------------+----------------+
