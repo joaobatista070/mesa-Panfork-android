@@ -2,7 +2,7 @@ Mesa 3D Graphics Library
 =========================
 `Mesa 3D Official Website <https://mesa3d.org>`_
 
-Panfork Bifrost/"midgard" "kbase shim" Support Branch
+Panfork Bifrost/midgard "kbase shim" Support Branch
 ------------------------------------
 This branch provides partial support for Mali gXX GPUs and some tXX models.
 
@@ -62,3 +62,4 @@ Remove the `0x` prefix from your GPU ID before using it in the command. For exam
 | 0x9093  | G57       |
 | 0xa867  | G610      |
 | 0xa802  | G710      |
++---------+-----------+
