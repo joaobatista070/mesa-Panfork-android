@@ -219,7 +219,7 @@ pan_open_kbase(void)
 
    struct mali_ioctl_get_version ver = {
       .major = 11,
-      .minor = 21,
+      .minor = 35,
    };
    int ret = drmIoctl(kbase_fd, MALI_IOCTL_GET_VERSION, &ver);
    if (ret == -1)
