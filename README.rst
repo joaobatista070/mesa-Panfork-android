@@ -36,6 +36,4 @@ To test the installation, install `glmark2-es2` and run the test for your GPU:
 .. code-block:: bash
 
     sudo apt install glmark2-es2-x11 -y
-
-    DISPLAY=:1 GALLIUM_DRIVER=panfrost
-glmark2-es2
+DISPLAY=:1 GALLIUM_DRIVER=panfrost glmark2-es2
