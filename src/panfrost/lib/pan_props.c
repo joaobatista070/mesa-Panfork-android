@@ -39,7 +39,7 @@
 #include "pan_texture.h"
 #include "wrap.h"
 #include "pan_util.h"
-#include "pan_base.h"
+#include "../base/pan_base.h"
 
 /* Fixed "minimum revisions" */
 #define NO_ANISO (~0)
