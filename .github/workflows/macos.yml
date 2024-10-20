@@ -1,60 +1,67 @@
-name: macOS-CI
-on: push
+name: Build Android
 
-permissions:
-  contents: read
+on:
+  [push, pull_request]
 
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  macOS-CI:
+  build:
     strategy:
       matrix:
-        glx_option: ['dri', 'xlib']
-    runs-on: macos-11
-    env:
-      GALLIUM_DUMP_CPU: true
-      MESON_EXEC: /Users/runner/Library/Python/3.11/bin/meson
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v3
-    - name: Install Dependencies
-      run: |
-        cat > Brewfile <<EOL
-        brew "bison"
-        brew "expat"
-        brew "gettext"
-        brew "libx11"
-        brew "libxcb"
-        brew "libxdamage"
-        brew "libxext"
-        brew "molten-vk"
-        brew "ninja"
-        brew "pkg-config"
-        brew "python@3.10"
-        EOL
+        arch: [ "arm32", "aarch64" ]
+      fail-fast: false
 
-        brew update
-        brew bundle --verbose
-    - name: Install Mako and meson
-      run: pip3 install --user mako meson
-    - name: Configure
-      run: |
-        cat > native_config <<EOL
-        [binaries]
-        llvm-config = '/usr/local/opt/llvm/bin/llvm-config'
-        EOL
-        $MESON_EXEC . build --native-file=native_config -Dmoltenvk-dir=$(brew --prefix molten-vk) -Dbuild-tests=true -Dosmesa=true -Dgallium-drivers=swrast,zink -Dglx=${{ matrix.glx_option }}
-    - name: Build
-      run: $MESON_EXEC compile -C build
-    - name: Test
-      run: $MESON_EXEC test -C build --print-errorlogs
-    - name: Install
-      run: $MESON_EXEC install -C build --destdir $PWD/install
-    - name: 'Upload Artifact'
-      if: always()
-      uses: actions/upload-artifact@v3
-      with:
-        name: macos-${{ matrix.glx_option }}-result
-        path: |
-          build/meson-logs/
-          install/
-        retention-days: 5
+    name: "Build for ${{matrix.arch}}"
+
+    runs-on: ubuntu-latest
+
+    steps:
+        
+      - uses: actions/checkout@v2
+
+      - name: Build
+        run: |
+          sudo apt update
+          sudo apt install -y meson libxrandr-dev libxxf86vm-dev libxcb-*-dev libx11-xcb-dev libxfixes-dev libdrm-dev libx11-dev
+          pip3 install mako
+          export ANDROID_NDK_HOME="$ANDROID_SDK_ROOT/ndk-bundle"
+          envsubst <android-drm-${{matrix.arch}} >build-crossfile-drm
+          git clone --depth 1 https://gitlab.freedesktop.org/mesa/drm.git
+          cd drm
+          meson setup "build-android" \
+            --prefix=/tmp/drm-static \
+            --cross-file "../build-crossfile-drm" \
+            -Ddefault_library=static \
+            -Dintel=disabled \
+            -Dradeon=disabled \
+            -Damdgpu=disabled \
+            -Dnouveau=disabled \
+            -Dvmwgfx=disabled \
+            -Dfreedreno=disabled \
+            -Dvc4=disabled \
+            -Detnaviv=disabled
+          ninja -C "build-android" install
+          cd ..
+          envsubst <android-${{matrix.arch}} >build-crossfile
+          meson setup "build-android" \
+            --prefix=/tmp/pan \
+            --cross-file "build-crossfile" \
+            -Dplatforms=android \
+            -Dplatform-sdk-version=26 \
+            -Dandroid-stub=true \
+            -Dllvm=disabled \
+            -Dxlib-lease=disabled \
+            -Degl=disabled \
+            -Dgbm=disabled \
+            -Dglx=disabled \
+            -Dopengl=true \
+            -Dosmesa=true \
+            -Dvulkan-drivers= \
+            -Dgallium-drivers=swrast,panfrost \
+            -Dshared-glapi=false
+          ninja -C "build-android" install
+      - name: Upload libraries
+        uses: actions/upload-artifact@v2
+        with:
+          name: panfrost_${{matrix.arch}}
+          path: /tmp/pan
