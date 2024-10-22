@@ -34,26 +34,8 @@ foreach ver : libpanfrost_base_versions
     c_args : ['-DPAN_BASE_VER=' + ver],
     gnu_symbol_visibility : 'hidden',
     dependencies: [dep_valgrind],
-  )
+)
 endforeach
-
-libpanfrost_kbase_shim = static_library(
-  'panfrost_kbase_shim',
-  ['panfrost_kbase.c', 'perf.c'],
-  include_directories : [
-    inc_include, inc_src, inc_mapi, inc_mesa, inc_gallium,
-    include_directories('include'),
-  ],
-  gnu_symbol_visibility : 'hidden',
-  build_by_default : false,
-)
-
-libpanfrost_kbase_shim_dep = declare_dependency(
-  link_with: [libpanfrost_kbase_shim],
-  include_directories: [include_directories('.')],
-)
-
-libpanfrost_base_per_arch += libpanfrost_kbase_shim
 
 libpanfrost_base = static_library(
   'panfrost_base',
