@@ -1,4 +1,4 @@
-qname: Build Android
+name: Build Android
 
 on:
   [push, pull_request]
@@ -51,10 +51,17 @@ jobs:
             -Dandroid-stub=true \
             -Dllvm=disabled \
             -Dxlib-lease=disabled \
+            -Degl=disabled \
+            -Dgbm=disabled \
+            -Dglx=disabled \
+            -Dopengl=true \
+            -Dosmesa=true \
+            -Dvulkan-drivers= \
             -Dgallium-drivers=swrast,panfrost \
+            -Dshared-glapi=false
           ninja -C "build-android" install
       - name: Upload libraries
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: panfrost_${{matrix.arch}}
           path: /tmp/pan
