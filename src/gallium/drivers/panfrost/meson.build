@@ -26,6 +26,8 @@ files_panfrost = files(
   'pan_public.h',
   'pan_screen.c',
   'pan_screen.h',
+  'pan_slowfb.c',
+  'pan_slowfb.h',
   'pan_resource.c',
   'pan_resource.h',
   'pan_context.c',
