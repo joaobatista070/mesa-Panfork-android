@@ -50,8 +50,7 @@ jobs:
             -Dllvm=disabled \
             -Dxlib-lease=disabled \
             -Dvulkan-drivers= \
-            -Dgallium-drivers=swrast,panfrost \
-            -Dshared-glapi=false
+            -Dgallium-drivers=swrast,panfrost 
           ninja -C "build-android" install
       - name: Upload libraries
         uses: actions/upload-artifact@v4
