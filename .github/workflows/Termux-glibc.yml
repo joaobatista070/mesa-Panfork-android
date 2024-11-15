@@ -29,6 +29,43 @@ jobs:
             x11proto-xinerama-dev x11proto-xf86vidmode-dev
           pip3 install mako
 
+      - name: Clone and build libdrm for armv7
+        run: |
+          git clone --depth 1 https://gitlab.freedesktop.org/mesa/drm.git
+          cd drm
+          meson setup "build-armv7" \
+            --prefix=/opt/libdrm/32 \
+            --cross-file "../armv7_cross_file.txt" \
+            -Ddefault_library=static \
+            -Dintel=disabled \
+            -Dradeon=disabled \
+            -Damdgpu=disabled \
+            -Dnouveau=disabled \
+            -Dvmwgfx=disabled \
+            -Dfreedreno=disabled \
+            -Dvc4=disabled \
+            -Detnaviv=disabled
+          ninja -C "build-armv7"
+          sudo ninja -C "build-armv7" install
+
+      - name: Clone and build libdrm for aarch64
+        run: |
+          cd drm
+          meson setup "build-aarch64" \
+            --prefix=/opt/libdrm/64 \
+            --cross-file "../aarch64_cross_file.txt" \
+            -Ddefault_library=static \
+            -Dintel=disabled \
+            -Dradeon=disabled \
+            -Damdgpu=disabled \
+            -Dnouveau=disabled \
+            -Dvmwgfx=disabled \
+            -Dfreedreno=disabled \
+            -Dvc4=disabled \
+            -Detnaviv=disabled
+          ninja -C "build-aarch64"
+          sudo ninja -C "build-aarch64" install
+
       - name: Create build directory for armv7
         run: mkdir -p build/armv7
 
@@ -69,8 +106,10 @@ jobs:
 
       - name: Restructure output directories
         run: |
-          sudo mv /opt/panfrost/64/lib/aarch64-linux-gnu /opt/panfrost/lib
-          sudo mv /opt/panfrost/32/lib/arm-linux-gnueabihf /opt/panfrost/lib32
+          # Cria a pasta glibc e move as bibliotecas dentro dela
+          sudo mkdir -p /opt/panfrost/glibc
+          sudo mv /opt/panfrost/64/lib/aarch64-linux-gnu /opt/panfrost/glibc/lib
+          sudo mv /opt/panfrost/32/lib/arm-linux-gnueabihf /opt/panfrost/glibc/lib32
 
       - name: Cleanup intermediate directories
         run: |
