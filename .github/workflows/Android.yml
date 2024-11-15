@@ -3,10 +3,10 @@ name: Build Mesa for ARM Cross-Compile
 on:
   push:
     branches:
-      - main
+      - Panfrost-G610
   pull_request:
     branches:
-      - main
+      - Panfrost-G610
 
 jobs:
   build:
