@@ -3,10 +3,10 @@ name: Build Mesa for ARM Cross-Compile
 on:
   push:
     branches:
-      - Panfrost-G610
+      - main
   pull_request:
     branches:
-      - Panfrost-G610
+      - main
 
 jobs:
   build:
@@ -17,9 +17,18 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Install dependencies
-        run: sudo apt-get update &&
-         apt install -y  meson ninja-build crossbuild-essential-armhf crossbuild-essential-arm64 libxrandr-dev libxxf86vm-dev libxcb1-dev libx11-xcb-dev libxfixes-dev libdrm-dev libx11-dev libxext-dev libxcomposite-dev libxdamage-dev libxinerama-dev libxres-dev libxi-dev libsm-dev libice-dev libxft-dev libxmu-dev libxt-dev libxtst-dev libxpm-dev libxv-dev libgl-dev libegl1-mesa-dev libgles2-mesa-dev x11proto-xext-dev x11proto-input-dev x11proto-randr-dev x11proto-xinerama-dev x11proto-xf86vidmode-dev &&  
-         pip3 install mako
+        run: |
+          sudo apt-get update && sudo apt-get install -y \
+            meson ninja-build crossbuild-essential-armhf crossbuild-essential-arm64 \
+            pkg-config libxrandr-dev libxxf86vm-dev libxcb1-dev libx11-xcb-dev \
+            libxfixes-dev libdrm-dev libx11-dev libxext-dev libxcomposite-dev \
+            libxdamage-dev libxinerama-dev libxres-dev libxi-dev libsm-dev \
+            libice-dev libxft-dev libxmu-dev libxt-dev libxtst-dev libxpm-dev \
+            libxv-dev libgl-dev libegl1-mesa-dev libgles2-mesa-dev \
+            x11proto-xext-dev x11proto-input-dev x11proto-randr-dev \
+            x11proto-xinerama-dev x11proto-xf86vidmode-dev
+          pip3 install mako
+
       - name: Create build directory for armv7
         run: mkdir -p build/armv7
 
@@ -31,13 +40,13 @@ jobs:
             -Dvulkan-drivers= \
             -Dbuildtype=release \
             -Dllvm=disabled \
-            -Dprefix=/opt/panfrost/armv7 ../..
+            -Dprefix=/opt/panfrost/32 ../..
 
       - name: Build and install armv7
         run: |
           cd build/armv7
           ninja
-          ninja install
+          sudo ninja install
 
       - name: Create build directory for aarch64
         run: mkdir -p build/aarch64
@@ -50,25 +59,30 @@ jobs:
             -Dvulkan-drivers= \
             -Dbuildtype=release \
             -Dllvm=disabled \
-            -Dprefix=/opt/panfrost/aarch64 ../..
+            -Dprefix=/opt/panfrost/64 ../..
 
       - name: Build and install aarch64
         run: |
           cd build/aarch64
           ninja
-          ninja install
+          sudo ninja install
 
-      - name: Rename and restructure output directories
+      - name: Restructure output directories
         run: |
-          sudo mv /opt/panfrost/aarch64/lib/aarch64-linux-gnu /opt/panfrost/lib64
-          sudo mv /opt/panfrost/armv7/lib/arm-linux-gnueabihf /opt/panfrost/lib32
-          sudo mv /opt/panfrost/aarch64/include /opt/panfrost/include
+          sudo mv /opt/panfrost/64/lib/aarch64-linux-gnu /opt/panfrost/lib
+          sudo mv /opt/panfrost/32/lib/arm-linux-gnueabihf /opt/panfrost/lib32
 
-      - name: Compress output directories
+      - name: Cleanup intermediate directories
         run: |
-          tar -czvf mesa_output.tar.gz -C /opt panfrost
+          sudo rm -rf /opt/panfrost/64 /opt/panfrost/32
+
+      - name: Compress the unified directory structure
+        run: |
+          cd /opt/panfrost
+          tar -czvf mesa_output.tar.gz *
+
       - name: Upload artifact
         uses: actions/upload-artifact@v3
         with:
-          name: mesa-build-output
-          path: mesa_output.tar.gz
+          name: mesa-unified-output
+          path: /opt/panfrost/mesa_output.tar.gz
