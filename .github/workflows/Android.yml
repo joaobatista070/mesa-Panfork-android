@@ -1,59 +1,74 @@
-name: Build Android
+name: Build Mesa for ARM Cross-Compile
 
 on:
-  [push, pull_request]
+  push:
+    branches:
+      - Panfrost-G610
+  pull_request:
+    branches:
+      - Panfrost-G610
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   build:
-    strategy:
-      matrix:
-        arch: [ "arm32", "aarch64" ]
-      fail-fast: false
-
-    name: "Build for ${{matrix.arch}}"
-
     runs-on: ubuntu-latest
 
     steps:
-        
-      - uses: actions/checkout@v2
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-      - name: Build
+      - name: Install dependencies
+        run: sudo apt-get update \
+         apt install -y  meson ninja-build crossbuild-essential-armhf crossbuild-essential-arm64 libxrandr-dev libxxf86vm-dev libxcb1-dev libx11-xcb-dev libxfixes-dev libdrm-dev libx11-dev libxext-dev libxcomposite-dev libxdamage-dev libxinerama-dev libxres-dev libxi-dev libsm-dev libice-dev libxft-dev libxmu-dev libxt-dev libxtst-dev libxpm-dev libxv-dev libgl-dev libegl1-mesa-dev libgles2-mesa-dev x11proto-xext-dev x11proto-input-dev x11proto-randr-dev x11proto-xinerama-dev x11proto-xf86vidmode-dev \  
+         pip3 install mako
+      - name: Create build directory for armv7
+        run: mkdir -p build/armv7
+
+      - name: Configure armv7 build
         run: |
-          sudo apt update
-          sudo apt install -y meson pkg-config libxrandr-dev libxxf86vm-dev libxcb1-dev libx11-xcb-dev libxfixes-dev libdrm-dev libx11-dev libxext-dev libxcomposite-dev libxdamage-dev libxinerama-dev libxres-dev libxi-dev libsm-dev libice-dev libxft-dev libxmu-dev libxt-dev libxtst-dev libxpm-dev libxv-dev libgl-dev libegl1-mesa-dev libgles2-mesa-dev x11proto-xext-dev x11proto-input-dev x11proto-randr-dev x11proto-xinerama-dev x11proto-xf86vidmode-dev  
-          pip3 install mako
-          export ANDROID_NDK_HOME="$ANDROID_SDK_ROOT/ndk-bundle"
-          envsubst <android-drm-${{matrix.arch}} >build-crossfile-drm
-          git clone --depth 1 https://gitlab.freedesktop.org/mesa/drm.git
-          cd drm
-          meson setup "build-android" \
-            --prefix=/tmp/drm-static \
-            --cross-file "../build-crossfile-drm" \
-            -Ddefault_library=static \
-            -Dintel=disabled \
-            -Dradeon=disabled \
-            -Damdgpu=disabled \
-            -Dnouveau=disabled \
-            -Dvmwgfx=disabled \
-            -Dfreedreno=disabled \
-            -Dvc4=disabled \
-            -Detnaviv=disabled
-          ninja -C "build-android" install
-          cd ..
-          envsubst <android-${{matrix.arch}} >build-crossfile
-          meson setup "build-android" \
-            --prefix=/tmp/pan \
-            --cross-file "build-crossfile" \
-            -Dplatforms=x11 \
-            -Dllvm=disabled \
-            -Dxlib-lease=disabled \
+          cd build/armv7
+          CFLAGS="-O3" meson setup --cross-file ../../armv7_cross_file.txt \
+            -Dgallium-drivers=panfrost,swrast \
             -Dvulkan-drivers= \
-            -Dgallium-drivers=swrast,panfrost 
-          ninja -C "build-android" install
-      - name: Upload libraries
-        uses: actions/upload-artifact@v4
+            -Dbuildtype=release \
+            -Dllvm=disabled \
+            -Dprefix=/opt/panfrost/armv7 ../..
+
+      - name: Build and install armv7
+        run: |
+          cd build/armv7
+          ninja
+          ninja install
+
+      - name: Create build directory for aarch64
+        run: mkdir -p build/aarch64
+
+      - name: Configure aarch64 build
+        run: |
+          cd build/aarch64
+          CFLAGS="-O3" meson setup --cross-file ../../aarch64_cross_file.txt \
+            -Dgallium-drivers=panfrost,swrast \
+            -Dvulkan-drivers= \
+            -Dbuildtype=release \
+            -Dllvm=disabled \
+            -Dprefix=/opt/panfrost/aarch64 ../..
+
+      - name: Build and install aarch64
+        run: |
+          cd build/aarch64
+          ninja
+          ninja install
+
+      - name: Rename and restructure output directories
+        run: |
+          sudo mv /opt/panfrost/aarch64/lib/aarch64-linux-gnu /opt/panfrost/lib64
+          sudo mv /opt/panfrost/armv7/lib/arm-linux-gnueabihf /opt/panfrost/lib32
+          sudo mv /opt/panfrost/aarch64/include /opt/panfrost/include
+
+      - name: Compress output directories
+        run: |
+          tar -czvf mesa_output.tar.gz -C /opt panfrost
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
         with:
-          name: panfrost_${{matrix.arch}}
-          path: /tmp/pan
+          name: mesa-build-output
+          path: mesa_output.tar.gz
