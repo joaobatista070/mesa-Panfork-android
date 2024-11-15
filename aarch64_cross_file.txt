@@ -3,8 +3,6 @@ c = '/usr/bin/aarch64-linux-gnu-gcc'
 cpp = '/usr/bin/aarch64-linux-gnu-g++'
 ar = '/usr/bin/aarch64-linux-gnu-ar'
 strip = '/usr/bin/aarch64-linux-gnu-strip'
-pkgconfig = '/usr/bin/aarch64-linux-gnu-pkg-config'
-
 pkgconfig = ['env', 'PKG_CONFIG_LIBDIR=.:/opt/libdrm/64/lib/pkgconfig', '/usr/bin/pkg-config']
 
 [host_machine]
