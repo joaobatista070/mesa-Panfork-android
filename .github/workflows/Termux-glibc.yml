@@ -77,6 +77,7 @@ jobs:
             -Dvulkan-drivers= \
             -Dbuildtype=release \
             -Dllvm=disabled \
+            -Dplatforms=x11 \
             -Dprefix=/opt/panfrost/32 ../..
 
       - name: Build and install armv7
@@ -96,6 +97,7 @@ jobs:
             -Dvulkan-drivers= \
             -Dbuildtype=release \
             -Dllvm=disabled \
+            -Dplatforms=x11 \
             -Dprefix=/opt/panfrost/64 ../..
 
       - name: Build and install aarch64
