@@ -18,7 +18,10 @@ jobs:
 
       - name: Install dependencies
         run: |
-          sudo sed -Ei 's/^# deb-src /deb-src /' /etc/apt/sources.list && sudo apt build-dep mesa -y && sudo apt-get update &&  pip3 install mako
+          sudo sed -Ei 's/^# deb-src /deb-src /' /etc/apt/sources.list
+          sudo apt-get update
+          sudo apt build-dep mesa -y
+          pip3 install mako
 
       - name: Clone and build libdrm for armv7
         run: |
