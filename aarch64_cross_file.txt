@@ -5,7 +5,7 @@ ar = '/usr/bin/aarch64-linux-gnu-ar'
 strip = '/usr/bin/aarch64-linux-gnu-strip'
 pkgconfig = '/usr/bin/aarch64-linux-gnu-pkg-config'
 
-pkgconfig = ['env', 'PKG_CONFIG_LIBDIR=.:/tmp/drm-static/lib/pkgconfig', '/usr/bin/pkg-config']
+pkgconfig = ['env', 'PKG_CONFIG_LIBDIR=.:/opt/libdrm/64/lib/pkgconfig', '/usr/bin/pkg-config']
 
 [host_machine]
 system = 'linux'
