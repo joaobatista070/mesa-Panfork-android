@@ -5,7 +5,7 @@ ar = '/usr/bin/arm-linux-gnueabihf-ar'
 strip = '/usr/bin/arm-linux-gnueabihf-strip'
 pkgconfig = '/usr/bin/arm-linux-gnueabihf-pkg-config'
 
-pkgconfig = ['env', 'PKG_CONFIG_LIBDIR=.:/tmp/drm-static/lib/pkgconfig', '/usr/bin/pkg-config']
+pkgconfig = ['env', 'PKG_CONFIG_LIBDIR=.:/opt/libdrm/32/lib/pkgconfig', '/usr/bin/pkg-config']
 
 [host_machine]
 system = 'linux'
