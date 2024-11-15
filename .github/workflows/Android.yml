@@ -17,8 +17,8 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Install dependencies
-        run: sudo apt-get update \
-         apt install -y  meson ninja-build crossbuild-essential-armhf crossbuild-essential-arm64 libxrandr-dev libxxf86vm-dev libxcb1-dev libx11-xcb-dev libxfixes-dev libdrm-dev libx11-dev libxext-dev libxcomposite-dev libxdamage-dev libxinerama-dev libxres-dev libxi-dev libsm-dev libice-dev libxft-dev libxmu-dev libxt-dev libxtst-dev libxpm-dev libxv-dev libgl-dev libegl1-mesa-dev libgles2-mesa-dev x11proto-xext-dev x11proto-input-dev x11proto-randr-dev x11proto-xinerama-dev x11proto-xf86vidmode-dev \  
+        run: sudo apt-get update &&
+         apt install -y  meson ninja-build crossbuild-essential-armhf crossbuild-essential-arm64 libxrandr-dev libxxf86vm-dev libxcb1-dev libx11-xcb-dev libxfixes-dev libdrm-dev libx11-dev libxext-dev libxcomposite-dev libxdamage-dev libxinerama-dev libxres-dev libxi-dev libsm-dev libice-dev libxft-dev libxmu-dev libxt-dev libxtst-dev libxpm-dev libxv-dev libgl-dev libegl1-mesa-dev libgles2-mesa-dev x11proto-xext-dev x11proto-input-dev x11proto-randr-dev x11proto-xinerama-dev x11proto-xf86vidmode-dev &&  
          pip3 install mako
       - name: Create build directory for armv7
         run: mkdir -p build/armv7
