@@ -1,3 +1,5 @@
+ARCHIVED(STUB)
+
 Mesa 3D Graphics Library
 =========================
 `Mesa 3D Official Website <https://mesa3d.org>`_
