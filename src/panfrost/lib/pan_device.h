@@ -40,7 +40,7 @@
 #include "panfrost/util/pan_ir.h"
 #include "pan_pool.h"
 #include "pan_util.h"
-#include "pan_base.h"
+#include "../base/pan_base.h"
 
 #include <genxml/gen_macros.h>
 
