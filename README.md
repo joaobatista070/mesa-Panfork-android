@@ -1,7 +1,6 @@
 `Mesa <https://mesa3d.org>`_ - The 3D Graphics Library
 ======================================================
 
-Valhall v10 "CSF" support branch—for Mali G710/G610.
 # All credits - 
 `@icecream95 (Panfrost dev)`
 
@@ -11,7 +10,6 @@ Valhall v10 "CSF" support branch—for Mali G710/G610.
 
 `@icecream95 (Panfrost dev)`
 
-`Mali G610 & 710 GPU Driver (Bifrost/midgard very supported)`
 
 ```
 
