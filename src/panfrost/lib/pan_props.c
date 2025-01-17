@@ -75,7 +75,7 @@ const struct panfrost_model panfrost_model_list[] = {
         MODEL(0x9093, "G57 r1", "TNAx", HAS_ANISO, 16384, {}),
         MODEL(0x9091, "G57", "TNAx", HAS_ANISO, 16384, {}),
         MODEL(0xa867, "G610", "LODx", HAS_ANISO, 65536, {}),
-        MODEL(0xb8a31030, "G615", "LODx", HAS_ANISO, 65536, {}),
+        MODEL(0xb8a31030, "G615", "LODx", NO_ANISO, 65536, {}),
         /* Matching the kbase dummy model, probably not real GPUs */
         MODEL(0xa802, "G710", "TODx", HAS_ANISO, 65536, {}),
 };
@@ -85,7 +85,7 @@ const struct panfrost_model panfrost_unknown_model = {
    .gpu_id = 0,
    .name = "Unknowm Mali device (Panfrost)",
    .performance_counters = "AAAA",
-   .min_rev_anisotropic = NO_ANISO, 
+   .min_rev_anisotropic = NO_ANISO, HAS_ANISO,
    .tilebuffer_size = 8192, 
    .quirks = {}, 
 };
