@@ -11,6 +11,6 @@ jobs:
           sudo apt-get install git wget
       - name: get termux-docker
         run: |
-          git clone e git clone https://github.com/termux/termux-docker.git
+          git clone https://github.com/termux/termux-docker.git
           cd termux-docker
           docker run hello-word
