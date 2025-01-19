@@ -13,4 +13,4 @@ jobs:
         run: |
           git clone https://github.com/termux/termux-docker.git
           cd termux-docker
-          docker run hello-word
+          docker run termux/termux-docker:aarch64
