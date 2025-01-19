@@ -13,5 +13,5 @@ jobs:
         run: |
           git clone https://github.com/termux/termux-docker.git
           cd termux-docker
-          docker run --rm --privileged aptman/qus -s -- -p aarch64 arm
+          docker run --rm --privileged aptman/qus -s -- --plataform=linux/arm64
           docker run termux/termux-docker:aarch64
