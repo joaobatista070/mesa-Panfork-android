@@ -12,7 +12,7 @@ jobs:
           pip3 install mako
       - name: install Ndk
         run: |
-          git clone https://dl.google.com/android/repository/android-ndk-r27c-linux.zip
+          wget https://dl.google.com/android/repository/android-ndk-r27c-linux.zip
           unzip android-ndk-r27c-linux.zip
           mv android-ndk-r27c-linix $NDK
           mkdir -p $NDK
