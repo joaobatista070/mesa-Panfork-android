@@ -8,10 +8,24 @@ jobs:
       - uses: actions/checkout@v4
       - name: download archives
         run: |
-          sudo apt-get install git wget
+          sudo apt-get install git wget meson ninja* python3
+          pip3 install mako
+      - name: install Ndk
+        run: |
+          git clone https://dl.google.com/android/repository/android-ndk-r27c-linux.zip
+          unzip android-ndk-r27c-linux.zip
+          mv android-ndk-r27c-linix $NDK
+          mkdir -p $NDK
+          export PATH=$PATH:$NDK/toochains/prebuilt/llvm/aarch64/bin
+          export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$NDK/toolchains/prebuilt/llvm/aarch64/lib
       - name: get termux-docker
         run: |
-          git clone https://github.com/termux/termux-docker.git
-          cd termux-docker
-          docker run --rm --privileged aptman/qus -s -- --plataform=linux/arm64
-          docker run termux/termux-docker:aarch64
+          git clone https://github.com/anonymusuer04/mesa-Panfork-android.git
+          cd mesa-panfork-android
+          mkdir mesa
+          LDFLAGS="-l:libandroid-shmem.a -llog -Wl,--undefined-version"  meson  build -Dgallium-drivers=panfrost,swrast -Dvulkan-drivers= -Dbuildtype=release -Dllvm=disabled -Dplatforms=x11,wayland  -Dprefix=../mesa && ninja -C build install
+      - name: compress mesa
+        run: |
+          cd mesa-panfork-android
+          tar cvf mesa-panfork.tar.gz mesa
+          
