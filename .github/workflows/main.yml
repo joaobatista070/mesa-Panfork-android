@@ -8,7 +8,7 @@ jobs:
       - uses: actions/checkout@v4
       - name: download archives
         run: |
-          sudo apt-get install git wget meson ninja* python3 xwayland
+          sudo apt-get install git wget meson ninja* python3 xwayland clang cmake gcc
           pip3 install mako setuptools
       - name: prepar achivers 
         run: |
@@ -17,8 +17,8 @@ jobs:
           mv android-ndk-r27c /home/runner
           export NKD=/home/runner/android-ndk-r27c
           export PATH=$PATH:$NDK/toolchains/llvm/prebuilt/linux-x86_64/bin
-          export CC=x86_64-linux-android21-clang
-          export CXX=x86_64-linux-android21-clang++
+          export CC=clang
+          export CXX=clang++
           mkdir /home/runner/mesa
           git clone https://github.com/anonymususer04/mesa-Panfork-android.git
           cd mesa-Panfork-android
