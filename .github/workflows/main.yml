@@ -8,7 +8,7 @@ jobs:
       - uses: actions/checkout@v4
       - name: download archives
         run: |
-          sudo apt-get install git wget meson ninja* python3 *x11* libwayland
+          sudo apt-get install git wget meson ninja* python3 *x11* xwayland
           pip3 install mako setuptools
       - name: prepar achivers 
         run: |
