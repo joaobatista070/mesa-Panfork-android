@@ -17,7 +17,7 @@ jobs:
           mv android-ndk-r27c /home/runner/ndk
           export NDk=/home/runner/ndk
           export TOOLCHAIN=$NDK/toolchains/llvm/prebuilt/linux-x86_64
-          export PATH=TOOLCHAIN/bin:$PATH
+          export PATH=$TOOLCHAIN/bin:$PATH
           export ARCH=aarch64
           export TOOL=$ARCH-linux-android26
           export CC=$TOOL-clang
