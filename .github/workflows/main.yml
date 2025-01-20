@@ -19,8 +19,7 @@ jobs:
           export TOOLCHAIN=$NDK/toolchains/llvm/prebuilt/linux-x86_64
           export PATH=TOOLCHAIN/bin:$PATH
           export ARCH=aarch64
-          export VERION=26
-          export TOOL=$ARCH-linux-android$VERSION
+          export TOOL=$ARCH-linux-android26
           export CC=$TOOL-clang
           export CXX=$TOOL-clang++
           git clone https://github.com/anonymususer04/mesa-Panfork-android.git
