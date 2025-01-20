@@ -9,20 +9,38 @@ jobs:
       - name: download archives
         run: |
           sudo apt-get install git wget meson ninja* python3 xwayland clang cmake gcc
-          pip3 install mako setuptools
+          pip3 install mako && pip3 install setuptools
       - name: prepar achivers 
         run: |
           wget https://dl.google.com/android/repository/android-ndk-r27c-linux.zip
           unzip android-ndk-r27c-linux.zip
-          mv android-ndk-r27c /home/runner
-          export NKD=/home/runner/android-ndk-r27c
-          export PATH=$PATH:$NDK/toolchains/llvm/prebuilt/linux-x86_64/bin
-          export CC=clang
-          export CXX=clang++
-          mkdir /home/runner/mesa
+          mv android-ndk-r27c /home/runner/ndk
+          export NDk=/home/runner/ndk
+          export TOOLCHAIN=$NDK/toolchains/llvm/prebuilt/linux-x86_64
+          export PATH=TOOLCHAIN/bin:$PATH
+          export ARCH=aarch64
+          export VERION=26
+          export TOOL=$ARCH-linux-android$VERSION
+          export CC=$TOOL-clang
+          export CXX=$TOOL-clang++
+          echo " [binaries] \
+          c = 'aarch64-linux-android26-clang' \
+          cpp = 'aarch64-linux-android26-clang++' \
+          ar = 'llvm-ar' \
+          strip = 'llvm-strip' \
+          ld = 'lld' \
+          pkgconfig = '$PREFIX/bin/pkg-config' \
+          [host_machine] \
+          system = 'linux' \
+          cpu_family = 'arm' \
+          cpu = 'armv8' \
+          endian = 'little' \
+          [propertes] \      
+          c_args = ['-fPIE', '-fPIC', '-DANDROID'] \
+          cpp_args = ['-fPIE', '-fPIC', '-DANDROID'] \" >> /home/runner/cross.txt
           git clone https://github.com/anonymususer04/mesa-Panfork-android.git
           cd mesa-Panfork-android
-          LDFLAGS=" -L$PREFIX/bin -l:libandroid-shmem.a -llog -Wl,--undefined-version"  meson  build -Dgallium-drivers=panfrost,swrast -Dvulkan-drivers= -Dbuildtype=release -Dllvm=disabled -Dplatforms=x11,wayland  -Dprefix=/home/runner/mesa && ninja -C build install
+          LDFLAGS=" -L$PREFIX/bin -l:libandroid-shmem.a -llog -Wl,--undefined-version"  meson  build --cross-file /home/runner/cross.txt -Dgallium-drivers=panfrost,swrast -Dvulkan-drivers= -Dbuildtype=release -Dllvm=disabled -Dplatforms=x11,wayland  -Dprefix=/home/runner/mesa && ninja -C build install
           tar -cvf /home/runner/mesa-panfork.tar.gz /home/runner/mesa
       - name: dispatch
         uses: softprops/action-gh-release@v2
