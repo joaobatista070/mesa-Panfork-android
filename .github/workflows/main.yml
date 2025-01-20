@@ -13,9 +13,9 @@ jobs:
       - name: prepar achivers 
         run: |
           wget https://dl.google.com/android/repository/android-ndk-r27c-linux.zip
-          unzip android-ndk-r27-linux.zip
-          mv android-ndk-r27-linix /home/runner
-          export PATH=$PATH:/home/runner/android-ndk-r27-linux/llvm/prebuilt/linux-x86_64/bin
+          unzip android-ndk-r27c-linux.zip
+          mv android-ndk-r27c-linix /home/runner
+          export PATH=$PATH:/home/runner/android-ndk-r27c-linux/llvm/prebuilt/linux-x86_64/bin
           mkdir /home/runner/mesa
           git clone https://github.com/anonymususer04/mesa-Panfork-android.git
           cd mesa-Panfork-android
